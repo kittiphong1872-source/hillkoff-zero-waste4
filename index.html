@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="th" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HILLKOFF GREEN INTELLIGENCE PLATFORM</title>
+    
+    <!-- Scripts & Styles -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.12.16/framer-motion.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#059669',
+                        secondary: '#10b981',
+                        darkBg: '#020617',
+                        cardBg: 'rgba(15, 23, 42, 0.8)',
+                        accent: '#34d399'
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            background-image: radial-gradient(circle at 50% 0%, #064e3b 0%, #020617 70%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass-morphism {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .green-glow {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        .sidebar-active {
+            background: rgba(16, 185, 129, 0.15);
+            border-right: 4px solid #10b981;
+            color: #10b981;
+        }
+        input, select {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #065f46; border-radius: 10px; }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <!-- APP WRAPPER -->
+    <div id="app" class="flex min-h-screen">
+        
+        <!-- SIDEBAR -->
+        <aside class="hidden lg:flex flex-col w-64 glass-morphism border-r border-white/10 fixed h-full z-50">
+            <div class="p-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center green-glow">
+                        <i class="fas fa-leaf text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xs font-bold text-emerald-400 tracking-widest uppercase">Hillkoff</h1>
+                        <p class="text-[10px] text-slate-400">Green Intelligence</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-4 space-y-2 mt-4">
+                <a href="#" onclick="showPage('dashboard')" class="nav-item sidebar-active flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
+                    <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+                </a>
+                <a href="#" onclick="showPage('waste')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all">
+                    <i class="fas fa-recycle"></i> <span>Waste Record</span>
+                </a>
+                <a href="#" onclick="showPage('ranking')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all">
+                    <i class="fas fa-trophy"></i> <span>Leaderboard</span>
+                </a>
+                <a href="#" onclick="showPage('community')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all">
+                    <i class="fas fa-users"></i> <span>Community</span>
+                </a>
+                <a href="#" onclick="showPage('report')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all">
+                    <i class="fas fa-file-contract"></i> <span>ESG Reports</span>
+                </a>
+            </nav>
+
+            <div class="p-4 mt-auto">
+                <div class="glass-morphism rounded-2xl p-4 border border-emerald-500/20 bg-emerald-500/5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-seedling text-emerald-400"></i>
+                        <span class="text-xs font-semibold uppercase">Eco Level 5</span>
+                    </div>
+                    <div class="w-full bg-white/10 rounded-full h-1.5 mb-2">
+                        <div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
+                    </div>
+                    <p class="text-[10px] text-slate-400">350 points to Level 6</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="flex-1 lg:ml-64 p-4 lg:p-8 pb-24 lg:pb-8">
+            
+            <!-- TOP NAV -->
+            <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
+                <div>
+                    <h2 id="page-title" class="text-2xl font-bold text-white">Dashboard Overview</h2>
+                    <p class="text-slate-400 text-sm">ยินดีต้อนรับกลับมา, คุณสมชาย (สำนักงานใหญ่)</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="relative p-2 text-slate-400 hover:text-white transition-colors">
+                        <i class="far fa-bell text-xl"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="flex items-center gap-3 p-1 pr-4 glass-morphism rounded-full border border-white/10">
+                        <img src="https://ui-avatars.com/api/?name=Somchai+Hillkoff&background=059669&color=fff" class="w-8 h-8 rounded-full" alt="User">
+                        <span class="text-sm font-medium">Somchai H.</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- PAGE: DASHBOARD -->
+            <div id="page-dashboard" class="page-content space-y-6">
+                <!-- KPI CARDS -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="glass-morphism p-6 rounded-3xl border-l-4 border-emerald-500 relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 text-emerald-500/10 text-6xl group-hover:scale-110 transition-transform">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <p class="text-slate-400 text-sm font-medium mb-1">Carbon Saved (Total)</p>
+                        <h3 class="text-3xl font-bold text-white">1,240.5 <span class="text-sm font-normal text-emerald-400">kgCO2e</span></h3>
+                        <p class="text-emerald-400 text-xs mt-2"><i class="fas fa-arrow-up mr-1"></i> 12% vs last month</p>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-3xl border-l-4 border-blue-500 relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 text-blue-500/10 text-6xl group-hover:scale-110 transition-transform">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <p class="text-slate-400 text-sm font-medium mb-1">Green Score</p>
+                        <h3 class="text-3xl font-bold text-white">8,420 <span class="text-sm font-normal text-blue-400">Pts</span></h3>
+                        <p class="text-blue-400 text-xs mt-2">Rank #3 in Company</p>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-3xl border-l-4 border-amber-500 relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 text-amber-500/10 text-6xl group-hover:scale-110 transition-transform">
+                            <i class="fas fa-recycle"></i>
+                        </div>
+                        <p class="text-slate-400 text-sm font-medium mb-1">Waste Diverted</p>
+                        <h3 class="text-3xl font-bold text-white">85.2 <span class="text-sm font-normal text-amber-400">%</span></h3>
+                        <p class="text-amber-400 text-xs mt-2">Target: 90% by Q4</p>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-3xl border-l-4 border-purple-500 relative overflow-hidden group">
+                        <div class="absolute -right-4 -bottom-4 text-purple-500/10 text-6xl group-hover:scale-110 transition-transform">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <p class="text-slate-400 text-sm font-medium mb-1">Participation</p>
+                        <h3 class="text-3xl font-bold text-white">92 <span class="text-sm font-normal text-purple-400">Staff</span></h3>
+                        <p class="text-purple-400 text-xs mt-2">Active now: 14</p>
+                    </div>
+                </div>
+
+                <!-- CHARTS ROW -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-morphism p-6 rounded-3xl min-h-[350px]">
+                        <div class="flex items-center justify-between mb-6">
+                            <h4 class="font-bold text-lg">Carbon Reduction Trend</h4>
+                            <select class="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs">
+                                <option>Weekly</option>
+                                <option>Monthly</option>
+                            </select>
+                        </div>
+                        <canvas id="carbonChart" height="250"></canvas>
+                    </div>
+                    <div class="glass-morphism p-6 rounded-3xl min-h-[350px]">
+                        <div class="flex items-center justify-between mb-6">
+                            <h4 class="font-bold text-lg">Waste Distribution</h4>
+                            <i class="fas fa-ellipsis-v text-slate-500"></i>
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <canvas id="wastePieChart" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BRANCH RANKING -->
+                <div class="glass-morphism p-6 rounded-3xl overflow-hidden">
+                    <h4 class="font-bold text-lg mb-6">Branch Green Ranking</h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="text-slate-400 border-b border-white/5">
+                                    <th class="pb-4 font-medium">Rank</th>
+                                    <th class="pb-4 font-medium">Branch</th>
+                                    <th class="pb-4 font-medium text-center">Waste Recycled (kg)</th>
+                                    <th class="pb-4 font-medium text-center">CO2 Saved</th>
+                                    <th class="pb-4 font-medium text-right">Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-white/5">
+                                <tr class="group hover:bg-white/5 transition-colors">
+                                    <td class="py-4"><span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold">1</span></td>
+                                    <td class="py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center"><i class="fas fa-building text-emerald-500"></i></div>
+                                            <span class="font-semibold">สาขาช้างเผือก</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 text-center">450.2</td>
+                                    <td class="py-4 text-center text-emerald-400">320.5 kg</td>
+                                    <td class="py-4">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <div class="w-24 bg-white/10 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-emerald-500 h-full" style="width: 95%"></div>
+                                            </div>
+                                            <span class="text-xs font-bold">95%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="group hover:bg-white/5 transition-colors">
+                                    <td class="py-4"><span class="w-8 h-8 rounded-lg bg-slate-500/20 text-slate-400 flex items-center justify-center font-bold">2</span></td>
+                                    <td class="py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center"><i class="fas fa-building text-blue-500"></i></div>
+                                            <span class="font-semibold">สำนักงานใหญ่</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 text-center">380.0</td>
+                                    <td class="py-4 text-center text-emerald-400">285.4 kg</td>
+                                    <td class="py-4">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <div class="w-24 bg-white/10 h-2 rounded-full overflow-hidden">
+                                                <div class="bg-emerald-500 h-full" style="width: 82%"></div>
+                                            </div>
+                                            <span class="text-xs font-bold">82%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE: WASTE RECORD (MODERN) -->
+            <div id="page-waste" class="page-content hidden max-w-2xl mx-auto space-y-6">
+                <div class="glass-morphism p-8 rounded-[2rem] border border-emerald-500/20">
+                    <div class="text-center mb-8">
+                        <div class="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
+                            <i class="fas fa-camera text-3xl text-emerald-400"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold">Record Waste Data</h3>
+                        <p class="text-slate-400 text-sm mt-1">ใช้ AI ตรวจสอบประเภทขยะอัตโนมัติเพื่อความแม่นยำ</p>
+                    </div>
+
+                    <form id="wasteForm" class="space-y-6">
+                        <!-- AI Vision Upload Section -->
+                        <div class="relative">
+                            <label class="block text-sm font-medium text-slate-400 mb-2">อัปโหลดรูปภาพ (บังคับผ่าน AI)</label>
+                            <div id="drop-zone" class="border-2 border-dashed border-white/10 rounded-3xl p-8 flex flex-col items-center justify-center bg-white/5 hover:bg-emerald-500/5 hover:border-emerald-500/30 transition-all cursor-pointer">
+                                <input type="file" id="fileInput" class="hidden" accept="image/*">
+                                <div id="preview-container" class="hidden w-full mb-4">
+                                    <img id="imagePreview" src="#" class="w-full h-48 object-cover rounded-2xl shadow-lg border border-emerald-500/50">
+                                </div>
+                                <div id="upload-icon" class="text-center">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-slate-500 mb-3"></i>
+                                    <p class="text-sm text-slate-400">คลิก หรือ วางรูปถ่ายขยะที่นี่</p>
+                                </div>
+                            </div>
+                            
+                            <!-- AI Result Overlay -->
+                            <div id="ai-loader" class="hidden absolute inset-0 bg-darkBg/80 flex flex-col items-center justify-center rounded-3xl z-10">
+                                <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mb-4"></div>
+                                <p class="text-emerald-400 font-bold animate-pulse">Gemini AI is analyzing...</p>
+                            </div>
+
+                            <div id="ai-result" class="hidden mt-4 p-4 glass-morphism rounded-2xl border-l-4 border-blue-500 bg-blue-500/5">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fas fa-robot text-blue-400 text-xl"></i>
+                                        <div>
+                                            <p class="text-xs text-blue-400 uppercase font-bold tracking-tighter">AI Analysis Result</p>
+                                            <p id="ai-waste-type" class="text-lg font-bold">Plastic Bottle</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-xs text-slate-400 font-medium">Confidence Score</p>
+                                        <p id="ai-confidence" class="text-lg font-bold text-emerald-400">94%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">ประเภทขยะ</label>
+                                <select id="wasteType" class="w-full p-4 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                                    <option value="coffee">กากกาแฟ</option>
+                                    <option value="plastic">พลาสติก</option>
+                                    <option value="paper">กระดาษ</option>
+                                    <option value="food">เศษอาหาร</option>
+                                    <option value="glass">แก้ว</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">น้ำหนัก (Kg)</label>
+                                <input type="number" step="0.1" placeholder="0.0" class="w-full p-4 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="handleSubmitRecord()" class="w-full btn-gradient py-4 rounded-2xl text-white font-bold text-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-check-circle"></i> บันทึกข้อมูลและรับคะแนน
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PAGE: COMMUNITY -->
+            <div id="page-community" class="page-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
+                    <!-- CHAT AREA -->
+                    <div class="lg:col-span-2 glass-morphism rounded-[2rem] flex flex-col overflow-hidden">
+                        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-comments text-emerald-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">Green Community</h4>
+                                    <p class="text-[10px] text-emerald-500">12 members online</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1 p-6 overflow-y-auto space-y-4" id="chat-messages">
+                            <!-- Messages -->
+                            <div class="flex items-start gap-3">
+                                <img src="https://ui-avatars.com/api/?name=Horm&background=6366f1&color=fff" class="w-8 h-8 rounded-full">
+                                <div class="max-w-[70%]">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <span class="text-xs font-bold">Horm (ป่าแพ่ง)</span>
+                                        <span class="text-[10px] text-slate-500 text-[10px] ">10:25</span>
+                                    </div>
+                                    <div class="p-3 rounded-2xl rounded-tl-none bg-white/5 border border-white/10 text-sm">
+                                        วันนี้พนักงานสาขาป่าแพ่งช่วยกันแยกกากกาแฟได้ 20 กก. เลยครับ! 🌱
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 flex-row-reverse">
+                                <img src="https://ui-avatars.com/api/?name=Somchai&background=059669&color=fff" class="w-8 h-8 rounded-full">
+                                <div class="max-w-[70%] text-right">
+                                    <div class="flex items-center justify-end gap-2 mb-1">
+                                        <span class="text-[10px] text-slate-500">10:28</span>
+                                        <span class="text-xs font-bold text-emerald-400">Me</span>
+                                    </div>
+                                    <div class="p-3 rounded-2xl rounded-tr-none bg-emerald-500/20 border border-emerald-500/30 text-sm text-left">
+                                        สุดยอดเลยครับทุกคน ไว้จะเข้าไปดูที่สาขานะครับ
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-white/5 border-t border-white/5">
+                            <div class="relative flex items-center gap-2">
+                                <input type="text" placeholder="Type your eco-idea..." class="flex-1 p-4 pr-12 rounded-full outline-none">
+                                <button class="absolute right-14 text-slate-400 hover:text-emerald-400 transition-colors"><i class="far fa-smile text-xl"></i></button>
+                                <button class="w-12 h-12 btn-gradient rounded-full flex items-center justify-center text-white"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHALLENGES -->
+                    <div class="glass-morphism rounded-[2rem] p-6 space-y-6 overflow-y-auto">
+                        <h4 class="font-bold text-lg">Active Challenges</h4>
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 relative overflow-hidden group">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider bg-emerald-500 px-2 py-0.5 rounded text-white">Featured</span>
+                                    <span class="text-xs text-slate-400 italic">3 days left</span>
+                                </div>
+                                <h5 class="font-bold text-sm mb-1">Zero Waste Week</h5>
+                                <p class="text-xs text-slate-400 mb-3">ลดขยะทั่วไปให้เหลือ 0 เป็นเวลา 7 วัน</p>
+                                <div class="w-full bg-white/10 h-1.5 rounded-full mb-2">
+                                    <div class="bg-emerald-500 h-full w-[60%]"></div>
+                                </div>
+                                <div class="flex justify-between text-[10px]">
+                                    <span>Progress: 60%</span>
+                                    <span class="text-emerald-400">+500 Pts</span>
+                                </div>
+                            </div>
+                            <!-- More challenges... -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER FOR MOBILE (NAV) -->
+            <nav class="lg:hidden fixed bottom-0 left-0 right-0 glass-morphism border-t border-white/10 flex items-center justify-around p-4 z-50">
+                <button onclick="showPage('dashboard')" class="text-emerald-500 flex flex-col items-center gap-1">
+                    <i class="fas fa-home text-xl"></i>
+                    <span class="text-[10px]">Home</span>
+                </button>
+                <button onclick="showPage('waste')" class="text-slate-400 flex flex-col items-center gap-1">
+                    <i class="fas fa-plus-circle text-2xl text-emerald-400 -mt-6 bg-darkBg rounded-full p-2 border-4 border-emerald-500/20"></i>
+                    <span class="text-[10px]">Record</span>
+                </button>
+                <button onclick="showPage('community')" class="text-slate-400 flex flex-col items-center gap-1">
+                    <i class="fas fa-users text-xl"></i>
+                    <span class="text-[10px]">Social</span>
+                </button>
+            </nav>
+
+        </main>
+    </div>
+
+    <!-- NOTIFICATION SYSTEM -->
+    <div id="toast" class="fixed bottom-24 lg:bottom-10 right-10 z-[100] transform translate-y-20 opacity-0 transition-all duration-500">
+        <div class="glass-morphism px-6 py-4 rounded-2xl border-l-4 border-emerald-500 flex items-center gap-4 shadow-2xl">
+            <div class="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center text-emerald-400">
+                <i class="fas fa-check"></i>
+            </div>
+            <div>
+                <p class="font-bold text-white">Record Saved!</p>
+                <p class="text-xs text-slate-400">+120 Eco Points added</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PAGE NAVIGATION
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.getElementById('page-' + pageId).classList.remove('hidden');
+            
+            // Update Page Title
+            const titles = {
+                'dashboard': 'Dashboard Overview',
+                'waste': 'Waste Management',
+                'ranking': 'Global Leaderboard',
+                'community': 'Community Engagement',
+                'report': 'ESG Sustainability Report'
+            };
+            document.getElementById('page-title').innerText = titles[pageId];
+
+            // Update Sidebar/Nav Active State
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('sidebar-active');
+                if(item.getAttribute('onclick')?.includes(pageId)) item.classList.add('sidebar-active');
+            });
+        }
+
+        // CHARTS IMPLEMENTATION
+        function initCharts() {
+            const ctx = document.getElementById('carbonChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Carbon Saved (kg)',
+                        data: [12, 19, 15, 25, 22, 30, 35],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#10b981'
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b' } }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            const pieCtx = document.getElementById('wastePieChart').getContext('2d');
+            new Chart(pieCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['กากกาแฟ', 'พลาสติก', 'กระดาษ', 'อื่นๆ'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: ['#059669', '#3b82f6', '#f59e0b', '#64748b'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom',
+                            labels: { color: '#94a3b8', padding: 20, font: { size: 10 } }
+                        } 
+                    }
+                }
+            });
+        }
+
+        // AI VISION MOCKUP & FORM HANDLER
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('drop-zone');
+        const aiLoader = document.getElementById('ai-loader');
+        const aiResult = document.getElementById('ai-result');
+
+        dropZone.onclick = () => fileInput.click();
+
+        fileInput.onchange = function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('imagePreview').src = event.target.result;
+                    document.getElementById('preview-container').classList.remove('hidden');
+                    document.getElementById('upload-icon').classList.add('hidden');
+                    simulateAIAnalysis();
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        function simulateAIAnalysis() {
+            aiLoader.classList.remove('hidden');
+            aiResult.classList.add('hidden');
+            
+            // Mocking Gemini Vision API Delay
+            setTimeout(() => {
+                aiLoader.classList.add('hidden');
+                aiResult.classList.remove('hidden');
+                document.getElementById('ai-waste-type').innerText = "Recyclable Plastic (PET)";
+                document.getElementById('ai-confidence').innerText = "98.2%";
+                
+                // Auto-select type
+                document.getElementById('wasteType').value = "plastic";
+            }, 2500);
+        }
+
+        function handleSubmitRecord() {
+            // Show success toast
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                showPage('dashboard');
+            }, 3000);
+        }
+
+        // INITIALIZATION
+        window.onload = () => {
+            initCharts();
+            // Default to dashboard
+            showPage('dashboard');
+        };
+    </script>
+
+    <!-- README OVERLAY (Optional but helpful) -->
+    <div id="readme-box" class="hidden fixed inset-0 bg-black/90 z-[200] p-8 overflow-y-auto">
+        <div class="max-w-3xl mx-auto glass-morphism p-10 rounded-3xl border border-white/20">
+            <button onclick="document.getElementById('readme-box').classList.add('hidden')" class="float-right text-slate-400"><i class="fas fa-times text-2xl"></i></button>
+            <h2 class="text-3xl font-bold text-emerald-400 mb-6 underline">Deployment Guide</h2>
+            <div class="prose prose-invert text-slate-300 space-y-4">
+                <p>1. **GitHub Pages:** Rename this file to `index.html`, upload to a repo, and enable GitHub Pages in Settings.</p>
+                <p>2. **Gemini API:** To use real AI, replace the `simulateAIAnalysis` function with a fetch call to: <br>
+                <code class="bg-white/10 px-2 py-1 rounded">https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=YOUR_API_KEY</code></p>
+                <p>3. **Firebase:** Connect your Firestore in the script tag to store real-time data instead of local state.</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
