@@ -2,322 +2,229 @@
 <html lang="th" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HILLKOFF GREEN INTELLIGENCE PLATFORM</title>
     
-    <!-- Scripts & Styles -->
+    <!-- Scripts & Frameworks -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/framer-motion/10.12.16/framer-motion.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#059669',
-                        secondary: '#10b981',
-                        darkBg: '#020617',
-                        cardBg: 'rgba(15, 23, 42, 0.8)',
-                        accent: '#34d399'
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Anuphan:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --hk-green-dark: #064E3B;
+            --hk-green-primary: #10B981;
+            --hk-green-light: #D1FAE5;
+            --hk-bg-dark: #0A0F0D;
+        }
+
         body {
-            background-color: #020617;
-            color: #f8fafc;
-            background-image: radial-gradient(circle at 50% 0%, #064e3b 0%, #020617 70%);
-            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', 'Anuphan', sans-serif;
+            background-color: var(--hk-bg-dark);
+            color: white;
+            -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
         }
-        .glass-morphism {
-            background: rgba(15, 23, 42, 0.7);
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
         }
-        .green-glow {
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+
+        .green-gradient-card {
+            background: linear-gradient(135deg, #065F46 0%, #064E3B 100%);
+            border: 1px solid rgba(16, 185, 129, 0.2);
         }
-        .btn-gradient {
-            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-            transition: all 0.3s ease;
+
+        .nav-active {
+            color: var(--hk-green-primary);
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.5));
         }
-        .btn-gradient:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
         }
-        .sidebar-active {
-            background: rgba(16, 185, 129, 0.15);
-            border-right: 4px solid #10b981;
-            color: #10b981;
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
         }
-        input, select {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: white !important;
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        .custom-shadow {
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #020617; }
-        ::-webkit-scrollbar-thumb { background: #065f46; border-radius: 10px; }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body x-data="appState()">
 
-    <!-- APP WRAPPER -->
-    <div id="app" class="flex min-h-screen">
+    <!-- Preloader -->
+    <div x-show="loading" class="fixed inset-0 z-[100] bg-[#0A0F0D] flex items-center justify-center">
+        <div class="flex flex-col items-center">
+            <div class="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="mt-4 text-emerald-500 font-medium tracking-widest animate-pulse">HILLKOFF INTELLIGENCE</p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="max-w-md mx-auto min-h-screen pb-24 relative">
         
-        <!-- SIDEBAR -->
-        <aside class="hidden lg:flex flex-col w-64 glass-morphism border-r border-white/10 fixed h-full z-50">
-            <div class="p-6">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-primary rounded-xl flex items-center justify-center green-glow">
-                        <i class="fas fa-leaf text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xs font-bold text-emerald-400 tracking-widest uppercase">Hillkoff</h1>
-                        <p class="text-[10px] text-slate-400">Green Intelligence</p>
-                    </div>
+        <!-- Header Section (Inspired by Screenshot) -->
+        <header class="p-6 flex justify-between items-center bg-transparent sticky top-0 z-40 backdrop-blur-md">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-emerald-500">
+                    <img src="https://www.hillkoff.com/wp-content/uploads/2021/10/Logo-Hillkoff-1.png" alt="Logo" class="w-8">
                 </div>
-            </div>
-
-            <nav class="flex-1 px-4 space-y-2 mt-4">
-                <a href="#" onclick="showPage('dashboard')" class="nav-item sidebar-active flex items-center gap-3 px-4 py-3 rounded-xl transition-all">
-                    <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-                </a>
-                <a href="#" onclick="showPage('waste')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all">
-                    <i class="fas fa-recycle"></i> <span>Waste Record</span>
-                </a>
-                <a href="#" onclick="showPage('ranking')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all">
-                    <i class="fas fa-trophy"></i> <span>Leaderboard</span>
-                </a>
-                <a href="#" onclick="showPage('community')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all">
-                    <i class="fas fa-users"></i> <span>Community</span>
-                </a>
-                <a href="#" onclick="showPage('report')" class="nav-item flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all">
-                    <i class="fas fa-file-contract"></i> <span>ESG Reports</span>
-                </a>
-            </nav>
-
-            <div class="p-4 mt-auto">
-                <div class="glass-morphism rounded-2xl p-4 border border-emerald-500/20 bg-emerald-500/5">
-                    <div class="flex items-center gap-2 mb-2">
-                        <i class="fas fa-seedling text-emerald-400"></i>
-                        <span class="text-xs font-semibold uppercase">Eco Level 5</span>
-                    </div>
-                    <div class="w-full bg-white/10 rounded-full h-1.5 mb-2">
-                        <div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
-                    </div>
-                    <p class="text-[10px] text-slate-400">350 points to Level 6</p>
-                </div>
-            </div>
-        </aside>
-
-        <!-- MAIN CONTENT -->
-        <main class="flex-1 lg:ml-64 p-4 lg:p-8 pb-24 lg:pb-8">
-            
-            <!-- TOP NAV -->
-            <header class="flex flex-wrap items-center justify-between gap-4 mb-8">
                 <div>
-                    <h2 id="page-title" class="text-2xl font-bold text-white">Dashboard Overview</h2>
-                    <p class="text-slate-400 text-sm">ยินดีต้อนรับกลับมา, คุณสมชาย (สำนักงานใหญ่)</p>
+                    <h1 class="text-lg font-bold leading-tight">Hillkoff</h1>
+                    <p class="text-[10px] text-emerald-400 uppercase tracking-tighter opacity-70">Zero Waste · ESG Platform</p>
                 </div>
-                <div class="flex items-center gap-4">
-                    <button class="relative p-2 text-slate-400 hover:text-white transition-colors">
-                        <i class="far fa-bell text-xl"></i>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
-                    <div class="flex items-center gap-3 p-1 pr-4 glass-morphism rounded-full border border-white/10">
-                        <img src="https://ui-avatars.com/api/?name=Somchai+Hillkoff&background=059669&color=fff" class="w-8 h-8 rounded-full" alt="User">
-                        <span class="text-sm font-medium">Somchai H.</span>
-                    </div>
-                </div>
-            </header>
+            </div>
+            <div class="text-right">
+                <p class="text-[10px] text-emerald-100/60 uppercase">CO₂e รวม</p>
+                <p class="text-xl font-bold text-emerald-400" x-text="totalCarbon + ' kg'"></p>
+            </div>
+        </header>
 
-            <!-- PAGE: DASHBOARD -->
-            <div id="page-dashboard" class="page-content space-y-6">
-                <!-- KPI CARDS -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="glass-morphism p-6 rounded-3xl border-l-4 border-emerald-500 relative overflow-hidden group">
-                        <div class="absolute -right-4 -bottom-4 text-emerald-500/10 text-6xl group-hover:scale-110 transition-transform">
-                            <i class="fas fa-leaf"></i>
-                        </div>
-                        <p class="text-slate-400 text-sm font-medium mb-1">Carbon Saved (Total)</p>
-                        <h3 class="text-3xl font-bold text-white">1,240.5 <span class="text-sm font-normal text-emerald-400">kgCO2e</span></h3>
-                        <p class="text-emerald-400 text-xs mt-2"><i class="fas fa-arrow-up mr-1"></i> 12% vs last month</p>
-                    </div>
-                    <div class="glass-morphism p-6 rounded-3xl border-l-4 border-blue-500 relative overflow-hidden group">
-                        <div class="absolute -right-4 -bottom-4 text-blue-500/10 text-6xl group-hover:scale-110 transition-transform">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <p class="text-slate-400 text-sm font-medium mb-1">Green Score</p>
-                        <h3 class="text-3xl font-bold text-white">8,420 <span class="text-sm font-normal text-blue-400">Pts</span></h3>
-                        <p class="text-blue-400 text-xs mt-2">Rank #3 in Company</p>
-                    </div>
-                    <div class="glass-morphism p-6 rounded-3xl border-l-4 border-amber-500 relative overflow-hidden group">
-                        <div class="absolute -right-4 -bottom-4 text-amber-500/10 text-6xl group-hover:scale-110 transition-transform">
-                            <i class="fas fa-recycle"></i>
-                        </div>
-                        <p class="text-slate-400 text-sm font-medium mb-1">Waste Diverted</p>
-                        <h3 class="text-3xl font-bold text-white">85.2 <span class="text-sm font-normal text-amber-400">%</span></h3>
-                        <p class="text-amber-400 text-xs mt-2">Target: 90% by Q4</p>
-                    </div>
-                    <div class="glass-morphism p-6 rounded-3xl border-l-4 border-purple-500 relative overflow-hidden group">
-                        <div class="absolute -right-4 -bottom-4 text-purple-500/10 text-6xl group-hover:scale-110 transition-transform">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <p class="text-slate-400 text-sm font-medium mb-1">Participation</p>
-                        <h3 class="text-3xl font-bold text-white">92 <span class="text-sm font-normal text-purple-400">Staff</span></h3>
-                        <p class="text-purple-400 text-xs mt-2">Active now: 14</p>
-                    </div>
-                </div>
+        <!-- Main Content -->
+        <main class="px-5 space-y-6">
 
-                <!-- CHARTS ROW -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="glass-morphism p-6 rounded-3xl min-h-[350px]">
-                        <div class="flex items-center justify-between mb-6">
-                            <h4 class="font-bold text-lg">Carbon Reduction Trend</h4>
-                            <select class="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs">
-                                <option>Weekly</option>
-                                <option>Monthly</option>
+            <!-- Tab: Dashboard -->
+            <template x-if="activeTab === 'home'">
+                <div class="space-y-6 animate-fade-in">
+                    
+                    <!-- Carbon Footprint Hero Card -->
+                    <div class="green-gradient-card p-8 rounded-[32px] text-center space-y-4 relative overflow-hidden custom-shadow">
+                        <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+                            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="#FFFFFF" d="M44.7,-76.4C58.1,-69.2,69.2,-58.1,77.3,-44.7C85.4,-31.3,90.5,-15.7,90.3,-0.1C90.1,15.5,84.6,31,75.4,44.1C66.2,57.2,53.3,67.9,38.9,74.9C24.5,81.9,8.6,85.2,-7.1,83.9C-22.8,82.7,-38.3,76.9,-51.7,67.8C-65.1,58.7,-76.4,46.3,-82.4,31.8C-88.4,17.3,-89.1,0.7,-85.4,-14.8C-81.7,-30.3,-73.6,-44.7,-61.7,-52.3C-49.8,-59.9,-34.1,-60.7,-19.9,-68.8C-5.7,-76.9,7.1,-92.3,22.4,-92C37.7,-91.7,55.5,-75.7,44.7,-76.4Z" transform="translate(100 100)" />
+                            </svg>
+                        </div>
+                        
+                        <p class="text-emerald-200/80 text-sm font-medium flex items-center justify-center gap-2">
+                            🌍 Carbon Footprint — องค์กร
+                        </p>
+                        <h2 class="text-6xl font-bold tracking-tighter" x-text="totalCarbon"></h2>
+                        <p class="text-xl font-medium text-emerald-200 tracking-widest">kg CO₂e</p>
+                        
+                        <div class="flex justify-center gap-2 pt-2">
+                            <span class="px-3 py-1 bg-white/10 rounded-full text-[10px] border border-white/10 uppercase">ISO 14064</span>
+                            <span class="px-3 py-1 bg-white/10 rounded-full text-[10px] border border-white/10 uppercase">GHG Protocol</span>
+                            <span class="px-3 py-1 bg-white/10 rounded-full text-[10px] border border-white/10 uppercase">SDG 12</span>
+                        </div>
+
+                        <!-- Mini Stats Grid -->
+                        <div class="grid grid-cols-3 gap-1 pt-6 border-t border-white/10 mt-6">
+                            <div>
+                                <p class="text-2xl font-bold" x-text="todayCarbon"></p>
+                                <p class="text-[10px] opacity-60 uppercase">kg วันนี้</p>
+                            </div>
+                            <div class="border-x border-white/10">
+                                <p class="text-2xl font-bold" x-text="monthCarbon"></p>
+                                <p class="text-[10px] opacity-60 uppercase">kg เดือนนี้</p>
+                            </div>
+                            <div>
+                                <p class="text-2xl font-bold" x-text="totalRecords"></p>
+                                <p class="text-[10px] opacity-60 uppercase">รายการ</p>
+                            </div>
+                        </div>
+
+                        <button @click="activeTab = 'log'" class="w-full bg-white text-emerald-900 py-4 rounded-2xl font-bold text-lg flex items-center justify-center gap-2 active:scale-95 transition-transform mt-4">
+                            📝 บันทึกขยะใหม่
+                        </button>
+                    </div>
+
+                    <!-- Branch Grid Section -->
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center px-1">
+                            <h3 class="font-bold text-lg">สรุปแต่ละสาขา</h3>
+                            <button class="text-emerald-400 text-sm">ดูทั้งหมด</button>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3">
+                            <template x-for="branch in branches" :key="branch.id">
+                                <div class="glass-card p-4 flex flex-col items-center justify-center text-center space-y-2 hover:bg-white/5 transition-colors cursor-pointer">
+                                    <div class="text-3xl" x-text="branch.icon"></div>
+                                    <h4 class="text-[11px] font-bold opacity-90 leading-tight" x-text="branch.name"></h4>
+                                    <p class="text-[9px] opacity-50" x-text="branch.records + ' รายการ'"></p>
+                                    <p class="text-xs font-bold text-emerald-400" x-text="branch.carbon + ' kg'"></p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Carbon Chart Section -->
+                    <div class="glass-card p-5 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-sm">แนวโน้มการลด Carbon</h3>
+                            <select class="bg-transparent text-[10px] border border-white/10 rounded px-2 py-1 outline-none">
+                                <option>สัปดาห์นี้</option>
+                                <option>เดือนนี้</option>
                             </select>
                         </div>
-                        <canvas id="carbonChart" height="250"></canvas>
+                        <canvas id="carbonChart" class="w-full h-40"></canvas>
                     </div>
-                    <div class="glass-morphism p-6 rounded-3xl min-h-[350px]">
-                        <div class="flex items-center justify-between mb-6">
-                            <h4 class="font-bold text-lg">Waste Distribution</h4>
-                            <i class="fas fa-ellipsis-v text-slate-500"></i>
-                        </div>
-                        <div class="flex items-center justify-center">
-                            <canvas id="wastePieChart" height="250"></canvas>
-                        </div>
-                    </div>
+
                 </div>
+            </template>
 
-                <!-- BRANCH RANKING -->
-                <div class="glass-morphism p-6 rounded-3xl overflow-hidden">
-                    <h4 class="font-bold text-lg mb-6">Branch Green Ranking</h4>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead>
-                                <tr class="text-slate-400 border-b border-white/5">
-                                    <th class="pb-4 font-medium">Rank</th>
-                                    <th class="pb-4 font-medium">Branch</th>
-                                    <th class="pb-4 font-medium text-center">Waste Recycled (kg)</th>
-                                    <th class="pb-4 font-medium text-center">CO2 Saved</th>
-                                    <th class="pb-4 font-medium text-right">Performance</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-white/5">
-                                <tr class="group hover:bg-white/5 transition-colors">
-                                    <td class="py-4"><span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold">1</span></td>
-                                    <td class="py-4">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center"><i class="fas fa-building text-emerald-500"></i></div>
-                                            <span class="font-semibold">สาขาช้างเผือก</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 text-center">450.2</td>
-                                    <td class="py-4 text-center text-emerald-400">320.5 kg</td>
-                                    <td class="py-4">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <div class="w-24 bg-white/10 h-2 rounded-full overflow-hidden">
-                                                <div class="bg-emerald-500 h-full" style="width: 95%"></div>
-                                            </div>
-                                            <span class="text-xs font-bold">95%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="group hover:bg-white/5 transition-colors">
-                                    <td class="py-4"><span class="w-8 h-8 rounded-lg bg-slate-500/20 text-slate-400 flex items-center justify-center font-bold">2</span></td>
-                                    <td class="py-4">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center"><i class="fas fa-building text-blue-500"></i></div>
-                                            <span class="font-semibold">สำนักงานใหญ่</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 text-center">380.0</td>
-                                    <td class="py-4 text-center text-emerald-400">285.4 kg</td>
-                                    <td class="py-4">
-                                        <div class="flex items-center justify-end gap-2">
-                                            <div class="w-24 bg-white/10 h-2 rounded-full overflow-hidden">
-                                                <div class="bg-emerald-500 h-full" style="width: 82%"></div>
-                                            </div>
-                                            <span class="text-xs font-bold">82%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PAGE: WASTE RECORD (MODERN) -->
-            <div id="page-waste" class="page-content hidden max-w-2xl mx-auto space-y-6">
-                <div class="glass-morphism p-8 rounded-[2rem] border border-emerald-500/20">
-                    <div class="text-center mb-8">
-                        <div class="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/30">
-                            <i class="fas fa-camera text-3xl text-emerald-400"></i>
+            <!-- Tab: Waste Logging (AI Feature) -->
+            <template x-if="activeTab === 'log'">
+                <div class="space-y-6 animate-fade-in pb-10">
+                    <h2 class="text-2xl font-bold">บันทึกข้อมูลขยะ</h2>
+                    
+                    <!-- AI Camera Placeholder -->
+                    <div class="relative group">
+                        <div @click="$refs.fileInput.click()" class="w-full aspect-video glass-card border-dashed border-2 border-emerald-500/50 flex flex-col items-center justify-center space-y-4 cursor-pointer overflow-hidden">
+                            <template x-if="!previewImage">
+                                <div class="text-center p-6">
+                                    <i data-lucide="camera" class="w-12 h-12 mx-auto text-emerald-500 mb-2"></i>
+                                    <p class="font-bold">ถ่ายรูปด้วย AI Vision</p>
+                                    <p class="text-[10px] opacity-50">เพื่อตรวจสอบประเภทขยะและรับคะแนนพิเศษ</p>
+                                </div>
+                            </template>
+                            <template x-if="previewImage">
+                                <img :src="previewImage" class="w-full h-full object-cover">
+                            </template>
                         </div>
-                        <h3 class="text-2xl font-bold">Record Waste Data</h3>
-                        <p class="text-slate-400 text-sm mt-1">ใช้ AI ตรวจสอบประเภทขยะอัตโนมัติเพื่อความแม่นยำ</p>
-                    </div>
-
-                    <form id="wasteForm" class="space-y-6">
-                        <!-- AI Vision Upload Section -->
-                        <div class="relative">
-                            <label class="block text-sm font-medium text-slate-400 mb-2">อัปโหลดรูปภาพ (บังคับผ่าน AI)</label>
-                            <div id="drop-zone" class="border-2 border-dashed border-white/10 rounded-3xl p-8 flex flex-col items-center justify-center bg-white/5 hover:bg-emerald-500/5 hover:border-emerald-500/30 transition-all cursor-pointer">
-                                <input type="file" id="fileInput" class="hidden" accept="image/*">
-                                <div id="preview-container" class="hidden w-full mb-4">
-                                    <img id="imagePreview" src="#" class="w-full h-48 object-cover rounded-2xl shadow-lg border border-emerald-500/50">
-                                </div>
-                                <div id="upload-icon" class="text-center">
-                                    <i class="fas fa-cloud-upload-alt text-4xl text-slate-500 mb-3"></i>
-                                    <p class="text-sm text-slate-400">คลิก หรือ วางรูปถ่ายขยะที่นี่</p>
-                                </div>
-                            </div>
-                            
-                            <!-- AI Result Overlay -->
-                            <div id="ai-loader" class="hidden absolute inset-0 bg-darkBg/80 flex flex-col items-center justify-center rounded-3xl z-10">
-                                <div class="animate-spin rounded-full h-12 w-12 border-4 border-emerald-500 border-t-transparent mb-4"></div>
-                                <p class="text-emerald-400 font-bold animate-pulse">Gemini AI is analyzing...</p>
-                            </div>
-
-                            <div id="ai-result" class="hidden mt-4 p-4 glass-morphism rounded-2xl border-l-4 border-blue-500 bg-blue-500/5">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-3">
-                                        <i class="fas fa-robot text-blue-400 text-xl"></i>
-                                        <div>
-                                            <p class="text-xs text-blue-400 uppercase font-bold tracking-tighter">AI Analysis Result</p>
-                                            <p id="ai-waste-type" class="text-lg font-bold">Plastic Bottle</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-xs text-slate-400 font-medium">Confidence Score</p>
-                                        <p id="ai-confidence" class="text-lg font-bold text-emerald-400">94%</p>
-                                    </div>
-                                </div>
+                        <input type="file" x-ref="fileInput" @change="handleFileUpload" class="hidden" accept="image/*">
+                        
+                        <!-- AI Analysis Overlay -->
+                        <div x-show="analyzing" class="absolute inset-0 bg-black/60 flex items-center justify-center backdrop-blur-sm">
+                            <div class="text-center">
+                                <div class="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                                <p class="text-sm font-bold tracking-widest">AI กำลังวิเคราะห์รูปภาพ...</p>
                             </div>
                         </div>
+                    </div>
 
+                    <!-- AI Result Notification -->
+                    <div x-show="aiResult" class="bg-emerald-500/20 border border-emerald-500/30 p-4 rounded-2xl flex items-start gap-4">
+                        <div class="bg-emerald-500 p-2 rounded-xl">
+                            <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-emerald-400">AI ผลวิเคราะห์: <span x-text="aiResult.type"></span></p>
+                            <p class="text-[10px] opacity-70" x-text="'ความแม่นยำ: ' + aiResult.confidence + '%'"></p>
+                            <p class="text-[10px] text-emerald-200 mt-1" x-text="aiResult.recommendation"></p>
+                        </div>
+                    </div>
+
+                    <!-- Log Form -->
+                    <div class="space-y-4 glass-card p-6">
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">ประเภทขยะ</label>
-                                <select id="wasteType" class="w-full p-4 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                            <div class="space-y-1">
+                                <label class="text-[10px] uppercase opacity-50 ml-1">ประเภทขยะ</label>
+                                <select x-model="formData.type" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none">
                                     <option value="coffee">กากกาแฟ</option>
                                     <option value="plastic">พลาสติก</option>
                                     <option value="paper">กระดาษ</option>
@@ -325,277 +232,327 @@
                                     <option value="glass">แก้ว</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-slate-400 uppercase mb-2">น้ำหนัก (Kg)</label>
-                                <input type="number" step="0.1" placeholder="0.0" class="w-full p-4 rounded-2xl focus:ring-2 focus:ring-emerald-500 outline-none transition-all">
+                            <div class="space-y-1">
+                                <label class="text-[10px] uppercase opacity-50 ml-1">น้ำหนัก (kg)</label>
+                                <input type="number" step="0.01" x-model="formData.weight" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none" placeholder="0.00">
                             </div>
                         </div>
 
-                        <button type="button" onclick="handleSubmitRecord()" class="w-full btn-gradient py-4 rounded-2xl text-white font-bold text-lg flex items-center justify-center gap-2">
-                            <i class="fas fa-check-circle"></i> บันทึกข้อมูลและรับคะแนน
+                        <div class="space-y-1">
+                            <label class="text-[10px] uppercase opacity-50 ml-1">สาขา</label>
+                            <select x-model="formData.branch" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 outline-none">
+                                <template x-for="branch in branches">
+                                    <option :value="branch.id" x-text="branch.name"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <button @click="saveLog()" class="w-full bg-emerald-500 text-white py-4 rounded-2xl font-bold shadow-lg shadow-emerald-500/20 active:scale-95 transition-transform">
+                            ยืนยันและรับ Green Score
                         </button>
-                    </form>
+                    </div>
                 </div>
-            </div>
+            </template>
 
-            <!-- PAGE: COMMUNITY -->
-            <div id="page-community" class="page-content hidden space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
-                    <!-- CHAT AREA -->
-                    <div class="lg:col-span-2 glass-morphism rounded-[2rem] flex flex-col overflow-hidden">
-                        <div class="p-6 border-b border-white/5 flex items-center justify-between">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center">
-                                    <i class="fas fa-comments text-emerald-400"></i>
+            <!-- Tab: Ranking -->
+            <template x-if="activeTab === 'ranking'">
+                <div class="space-y-6 animate-fade-in">
+                    <div class="text-center py-4">
+                        <h2 class="text-2xl font-bold uppercase tracking-widest">Sustainability Ranking</h2>
+                        <p class="text-xs opacity-50">อันดับพนักงานผู้ช่วยโลก</p>
+                    </div>
+
+                    <!-- Top 3 -->
+                    <div class="flex items-end justify-center gap-4 pb-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 rounded-full border-2 border-slate-400 overflow-hidden mb-2">
+                                <img src="https://i.pravatar.cc/150?u=2" class="w-full h-full object-cover">
+                            </div>
+                            <p class="text-[10px] font-bold">K. Somchai</p>
+                            <div class="h-16 w-12 bg-slate-500/30 rounded-t-lg mt-2 flex items-center justify-center font-bold text-xl">2</div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-20 h-20 rounded-full border-4 border-yellow-500 overflow-hidden mb-2 relative">
+                                <div class="absolute -top-1 left-1/2 -translate-x-1/2 bg-yellow-500 text-[8px] px-2 py-0.5 rounded-full text-black font-bold uppercase">King</div>
+                                <img src="https://i.pravatar.cc/150?u=1" class="w-full h-full object-cover">
+                            </div>
+                            <p class="text-[10px] font-bold text-yellow-500">K. Anucha</p>
+                            <div class="h-24 w-16 bg-yellow-500/30 rounded-t-lg mt-2 flex items-center justify-center font-bold text-3xl">1</div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div class="w-16 h-16 rounded-full border-2 border-orange-400 overflow-hidden mb-2">
+                                <img src="https://i.pravatar.cc/150?u=3" class="w-full h-full object-cover">
+                            </div>
+                            <p class="text-[10px] font-bold">K. Mali</p>
+                            <div class="h-12 w-12 bg-orange-500/30 rounded-t-lg mt-2 flex items-center justify-center font-bold text-xl">3</div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <template x-for="(user, index) in rankings" :key="index">
+                            <div class="glass-card p-4 flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-sm font-bold opacity-50" x-text="index + 4"></span>
+                                    <img :src="`https://i.pravatar.cc/150?u=${index+10}`" class="w-10 h-10 rounded-full">
+                                    <div>
+                                        <p class="text-sm font-bold" x-text="user.name"></p>
+                                        <p class="text-[10px] opacity-50" x-text="user.branch"></p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h4 class="font-bold">Green Community</h4>
-                                    <p class="text-[10px] text-emerald-500">12 members online</p>
+                                <div class="text-right">
+                                    <p class="text-emerald-400 font-bold" x-text="user.score"></p>
+                                    <p class="text-[8px] opacity-40 uppercase">Points</p>
                                 </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Tab: Analytics / ESG Report -->
+            <template x-if="activeTab === 'report'">
+                <div class="space-y-6 animate-fade-in">
+                    <h2 class="text-2xl font-bold">ESG Report & Analytics</h2>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="glass-card p-5 space-y-2">
+                            <p class="text-[10px] opacity-50 uppercase tracking-tighter">Circular Economy</p>
+                            <p class="text-2xl font-bold text-blue-400">84%</p>
+                            <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-400 w-[84%]"></div>
                             </div>
                         </div>
-                        
-                        <div class="flex-1 p-6 overflow-y-auto space-y-4" id="chat-messages">
-                            <!-- Messages -->
-                            <div class="flex items-start gap-3">
-                                <img src="https://ui-avatars.com/api/?name=Horm&background=6366f1&color=fff" class="w-8 h-8 rounded-full">
-                                <div class="max-w-[70%]">
-                                    <div class="flex items-center gap-2 mb-1">
-                                        <span class="text-xs font-bold">Horm (ป่าแพ่ง)</span>
-                                        <span class="text-[10px] text-slate-500 text-[10px] ">10:25</span>
-                                    </div>
-                                    <div class="p-3 rounded-2xl rounded-tl-none bg-white/5 border border-white/10 text-sm">
-                                        วันนี้พนักงานสาขาป่าแพ่งช่วยกันแยกกากกาแฟได้ 20 กก. เลยครับ! 🌱
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start gap-3 flex-row-reverse">
-                                <img src="https://ui-avatars.com/api/?name=Somchai&background=059669&color=fff" class="w-8 h-8 rounded-full">
-                                <div class="max-w-[70%] text-right">
-                                    <div class="flex items-center justify-end gap-2 mb-1">
-                                        <span class="text-[10px] text-slate-500">10:28</span>
-                                        <span class="text-xs font-bold text-emerald-400">Me</span>
-                                    </div>
-                                    <div class="p-3 rounded-2xl rounded-tr-none bg-emerald-500/20 border border-emerald-500/30 text-sm text-left">
-                                        สุดยอดเลยครับทุกคน ไว้จะเข้าไปดูที่สาขานะครับ
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="p-4 bg-white/5 border-t border-white/5">
-                            <div class="relative flex items-center gap-2">
-                                <input type="text" placeholder="Type your eco-idea..." class="flex-1 p-4 pr-12 rounded-full outline-none">
-                                <button class="absolute right-14 text-slate-400 hover:text-emerald-400 transition-colors"><i class="far fa-smile text-xl"></i></button>
-                                <button class="w-12 h-12 btn-gradient rounded-full flex items-center justify-center text-white"><i class="fas fa-paper-plane"></i></button>
+                        <div class="glass-card p-5 space-y-2">
+                            <p class="text-[10px] opacity-50 uppercase tracking-tighter">Participation</p>
+                            <p class="text-2xl font-bold text-purple-400">92%</p>
+                            <div class="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                <div class="h-full bg-purple-400 w-[92%]"></div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- CHALLENGES -->
-                    <div class="glass-morphism rounded-[2rem] p-6 space-y-6 overflow-y-auto">
-                        <h4 class="font-bold text-lg">Active Challenges</h4>
-                        <div class="space-y-4">
-                            <div class="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 relative overflow-hidden group">
-                                <div class="flex justify-between items-start mb-2">
-                                    <span class="text-[10px] font-bold uppercase tracking-wider bg-emerald-500 px-2 py-0.5 rounded text-white">Featured</span>
-                                    <span class="text-xs text-slate-400 italic">3 days left</span>
-                                </div>
-                                <h5 class="font-bold text-sm mb-1">Zero Waste Week</h5>
-                                <p class="text-xs text-slate-400 mb-3">ลดขยะทั่วไปให้เหลือ 0 เป็นเวลา 7 วัน</p>
-                                <div class="w-full bg-white/10 h-1.5 rounded-full mb-2">
-                                    <div class="bg-emerald-500 h-full w-[60%]"></div>
-                                </div>
-                                <div class="flex justify-between text-[10px]">
-                                    <span>Progress: 60%</span>
-                                    <span class="text-emerald-400">+500 Pts</span>
+                    <div class="glass-card p-6 space-y-6">
+                        <h3 class="font-bold flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                            Export Sustainability Data
+                        </h3>
+                        <div class="space-y-3">
+                            <button @click="exportData('csv')" class="w-full py-3 bg-white/5 border border-white/10 rounded-xl flex items-center justify-between px-4 hover:bg-white/10 transition-colors">
+                                <span class="text-sm">Download ESG Summary (CSV)</span>
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                            </button>
+                            <button @click="window.print()" class="w-full py-3 bg-white/5 border border-white/10 rounded-xl flex items-center justify-between px-4 hover:bg-white/10 transition-colors">
+                                <span class="text-sm">Export ISO 14064 Report (PDF)</span>
+                                <i data-lucide="external-link" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Community Feed Simulation -->
+                    <div class="space-y-4">
+                        <h3 class="font-bold text-lg px-1">Green Community</h3>
+                        <div class="glass-card p-4 space-y-4">
+                            <div class="flex gap-3">
+                                <img src="https://i.pravatar.cc/150?u=4" class="w-10 h-10 rounded-full">
+                                <div class="flex-1">
+                                    <div class="bg-white/5 p-3 rounded-2xl rounded-tl-none">
+                                        <p class="text-xs font-bold text-emerald-400">Admin_Hillkoff</p>
+                                        <p class="text-xs mt-1">วันนี้สาขามหิดลทำสถิติลด Carbon ได้สูงสุด! 🌿🎉</p>
+                                    </div>
+                                    <div class="flex gap-4 mt-2 px-1">
+                                        <button class="flex items-center gap-1 text-[10px] opacity-50"><i data-lucide="heart" class="w-3 h-3"></i> 24</button>
+                                        <button class="flex items-center gap-1 text-[10px] opacity-50"><i data-lucide="message-square" class="w-3 h-3"></i> 5</button>
+                                    </div>
                                 </div>
                             </div>
-                            <!-- More challenges... -->
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- FOOTER FOR MOBILE (NAV) -->
-            <nav class="lg:hidden fixed bottom-0 left-0 right-0 glass-morphism border-t border-white/10 flex items-center justify-around p-4 z-50">
-                <button onclick="showPage('dashboard')" class="text-emerald-500 flex flex-col items-center gap-1">
-                    <i class="fas fa-home text-xl"></i>
-                    <span class="text-[10px]">Home</span>
-                </button>
-                <button onclick="showPage('waste')" class="text-slate-400 flex flex-col items-center gap-1">
-                    <i class="fas fa-plus-circle text-2xl text-emerald-400 -mt-6 bg-darkBg rounded-full p-2 border-4 border-emerald-500/20"></i>
-                    <span class="text-[10px]">Record</span>
-                </button>
-                <button onclick="showPage('community')" class="text-slate-400 flex flex-col items-center gap-1">
-                    <i class="fas fa-users text-xl"></i>
-                    <span class="text-[10px]">Social</span>
-                </button>
-            </nav>
+            </template>
 
         </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-black/80 backdrop-blur-xl border-t border-white/10 px-6 py-4 z-50">
+            <div class="flex justify-between items-center">
+                <button @click="activeTab = 'home'" :class="activeTab === 'home' ? 'nav-active' : 'opacity-40'" class="flex flex-col items-center gap-1">
+                    <i data-lucide="home" class="w-6 h-6"></i>
+                    <span class="text-[9px] font-medium">หน้าหลัก</span>
+                </button>
+                <button @click="activeTab = 'log'" :class="activeTab === 'log' ? 'nav-active' : 'opacity-40'" class="flex flex-col items-center gap-1">
+                    <i data-lucide="plus-circle" class="w-6 h-6"></i>
+                    <span class="text-[9px] font-medium">บันทึก</span>
+                </button>
+                <button @click="activeTab = 'ranking'" :class="activeTab === 'ranking' ? 'nav-active' : 'opacity-40'" class="flex flex-col items-center gap-1">
+                    <i data-lucide="trophy" class="w-6 h-6"></i>
+                    <span class="text-[9px] font-medium">Ranking</span>
+                </button>
+                <button @click="activeTab = 'report'" :class="activeTab === 'report' ? 'nav-active' : 'opacity-40'" class="flex flex-col items-center gap-1">
+                    <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                    <span class="text-[9px] font-medium">รายงาน</span>
+                </button>
+            </div>
+        </nav>
+
     </div>
 
-    <!-- NOTIFICATION SYSTEM -->
-    <div id="toast" class="fixed bottom-24 lg:bottom-10 right-10 z-[100] transform translate-y-20 opacity-0 transition-all duration-500">
-        <div class="glass-morphism px-6 py-4 rounded-2xl border-l-4 border-emerald-500 flex items-center gap-4 shadow-2xl">
-            <div class="w-10 h-10 bg-emerald-500/20 rounded-full flex items-center justify-center text-emerald-400">
-                <i class="fas fa-check"></i>
-            </div>
-            <div>
-                <p class="font-bold text-white">Record Saved!</p>
-                <p class="text-xs text-slate-400">+120 Eco Points added</p>
-            </div>
-        </div>
-    </div>
-
+    <!-- App Logic -->
     <script>
-        // PAGE NAVIGATION
-        function showPage(pageId) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-            document.getElementById('page-' + pageId).classList.remove('hidden');
-            
-            // Update Page Title
-            const titles = {
-                'dashboard': 'Dashboard Overview',
-                'waste': 'Waste Management',
-                'ranking': 'Global Leaderboard',
-                'community': 'Community Engagement',
-                'report': 'ESG Sustainability Report'
-            };
-            document.getElementById('page-title').innerText = titles[pageId];
-
-            // Update Sidebar/Nav Active State
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('sidebar-active');
-                if(item.getAttribute('onclick')?.includes(pageId)) item.classList.add('sidebar-active');
-            });
-        }
-
-        // CHARTS IMPLEMENTATION
-        function initCharts() {
-            const ctx = document.getElementById('carbonChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                    datasets: [{
-                        label: 'Carbon Saved (kg)',
-                        data: [12, 19, 15, 25, 22, 30, 35],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointBackgroundColor: '#10b981'
-                    }]
+        function appState() {
+            return {
+                loading: true,
+                activeTab: 'home',
+                totalCarbon: 1.26,
+                todayCarbon: 0.12,
+                monthCarbon: 1.26,
+                totalRecords: 124,
+                analyzing: false,
+                previewImage: null,
+                aiResult: null,
+                formData: {
+                    type: 'coffee',
+                    weight: '',
+                    branch: 'hq'
                 },
-                options: {
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b' } },
-                        x: { grid: { display: false }, ticks: { color: '#64748b' } }
-                    },
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
+                branches: [
+                    { id: 'hq', name: 'สำนักงานใหญ่', icon: '🏢', carbon: 0.45, records: 45 },
+                    { id: 'cp', name: 'ช้างเผือก', icon: '🐘', carbon: 1.26, records: 12 },
+                    { id: 'md', name: 'มหิดล', icon: '🎓', carbon: 0.82, records: 28 },
+                    { id: 'pp', name: 'ป่าแพ่ง', icon: '🌿', carbon: 0.31, records: 15 },
+                    { id: 'td', name: 'ทับเดื่อ', icon: '🌱', carbon: 0.15, records: 8 },
+                    { id: 'rt', name: 'ราติก้า', icon: '☕', carbon: 0.64, records: 16 }
+                ],
+                rankings: [
+                    { name: 'K. Wittaya', score: 2450, branch: 'สำนักงานใหญ่' },
+                    { name: 'K. Pimpa', score: 2100, branch: 'มหิดล' },
+                    { name: 'K. Somsak', score: 1850, branch: 'ช้างเผือก' },
+                    { name: 'K. Janya', score: 1200, branch: 'ป่าแพ่ง' }
+                ],
 
-            const pieCtx = document.getElementById('wastePieChart').getContext('2d');
-            new Chart(pieCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['กากกาแฟ', 'พลาสติก', 'กระดาษ', 'อื่นๆ'],
-                    datasets: [{
-                        data: [45, 25, 20, 10],
-                        backgroundColor: ['#059669', '#3b82f6', '#f59e0b', '#64748b'],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
+                init() {
+                    // Initialize Lucide Icons
+                    lucide.createIcons();
+                    
+                    // Simulate loading
+                    setTimeout(() => {
+                        this.loading = false;
+                        this.initChart();
+                    }, 1500);
+
+                    // Watch for tab change to re-init icons and charts
+                    this.$watch('activeTab', (val) => {
+                        setTimeout(() => {
+                            lucide.createIcons();
+                            if(val === 'home') this.initChart();
+                        }, 50);
+                    });
                 },
-                options: {
-                    cutout: '70%',
-                    plugins: { 
-                        legend: { 
-                            position: 'bottom',
-                            labels: { color: '#94a3b8', padding: 20, font: { size: 10 } }
-                        } 
+
+                initChart() {
+                    const ctx = document.getElementById('carbonChart')?.getContext('2d');
+                    if (!ctx) return;
+                    
+                    if (window.myChart) window.myChart.destroy();
+                    
+                    window.myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                            datasets: [{
+                                label: 'Carbon Saved (kg)',
+                                data: [0.2, 0.5, 0.4, 0.8, 0.6, 1.2, 0.9],
+                                borderColor: '#10B981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                fill: true,
+                                tension: 0.4,
+                                borderWidth: 3,
+                                pointRadius: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                y: { display: false },
+                                x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10 } } }
+                            }
+                        }
+                    });
+                },
+
+                handleFileUpload(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (f) => {
+                        this.previewImage = f.target.result;
+                        this.runAIAnalysis();
+                    };
+                    reader.readAsDataURL(file);
+                },
+
+                async runAIAnalysis() {
+                    this.analyzing = true;
+                    
+                    // Simulation of Gemini Vision API call
+                    // In real production, use: fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=YOUR_API_KEY', ...)
+                    
+                    setTimeout(() => {
+                        this.analyzing = false;
+                        this.aiResult = {
+                            type: 'Plastic Bottle (PET)',
+                            confidence: 94,
+                            recommendation: 'ควรล้างคราบเครื่องดื่มออกก่อนนำไปรีไซเคิล'
+                        };
+                        this.formData.type = 'plastic';
+                        lucide.createIcons();
+                    }, 2000);
+                },
+
+                saveLog() {
+                    if (!this.formData.weight) {
+                        alert('กรุณาระบุน้ำหนัก');
+                        return;
                     }
+
+                    // Update stats
+                    const weightVal = parseFloat(this.formData.weight);
+                    this.totalCarbon = (parseFloat(this.totalCarbon) + (weightVal * 0.5)).toFixed(2);
+                    this.totalRecords++;
+                    
+                    alert('บันทึกข้อมูลสำเร็จ! คุณได้รับ 50 Green Points');
+                    this.activeTab = 'home';
+                    this.previewImage = null;
+                    this.aiResult = null;
+                    this.formData.weight = '';
+                },
+
+                exportData(type) {
+                    const content = "Date,Type,Weight,CarbonSaved,Branch\n2024-05-12,Coffee,1.2,0.6,HQ";
+                    const blob = new Blob([content], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.setAttribute('hidden', '');
+                    a.setAttribute('href', url);
+                    a.setAttribute('download', 'hillkoff_esg_report.csv');
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
                 }
-            });
-        }
-
-        // AI VISION MOCKUP & FORM HANDLER
-        const fileInput = document.getElementById('fileInput');
-        const dropZone = document.getElementById('drop-zone');
-        const aiLoader = document.getElementById('ai-loader');
-        const aiResult = document.getElementById('ai-result');
-
-        dropZone.onclick = () => fileInput.click();
-
-        fileInput.onchange = function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    document.getElementById('imagePreview').src = event.target.result;
-                    document.getElementById('preview-container').classList.remove('hidden');
-                    document.getElementById('upload-icon').classList.add('hidden');
-                    simulateAIAnalysis();
-                };
-                reader.readAsDataURL(file);
             }
-        };
-
-        function simulateAIAnalysis() {
-            aiLoader.classList.remove('hidden');
-            aiResult.classList.add('hidden');
-            
-            // Mocking Gemini Vision API Delay
-            setTimeout(() => {
-                aiLoader.classList.add('hidden');
-                aiResult.classList.remove('hidden');
-                document.getElementById('ai-waste-type').innerText = "Recyclable Plastic (PET)";
-                document.getElementById('ai-confidence').innerText = "98.2%";
-                
-                // Auto-select type
-                document.getElementById('wasteType').value = "plastic";
-            }, 2500);
         }
-
-        function handleSubmitRecord() {
-            // Show success toast
-            const toast = document.getElementById('toast');
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-                showPage('dashboard');
-            }, 3000);
-        }
-
-        // INITIALIZATION
-        window.onload = () => {
-            initCharts();
-            // Default to dashboard
-            showPage('dashboard');
-        };
     </script>
 
-    <!-- README OVERLAY (Optional but helpful) -->
-    <div id="readme-box" class="hidden fixed inset-0 bg-black/90 z-[200] p-8 overflow-y-auto">
-        <div class="max-w-3xl mx-auto glass-morphism p-10 rounded-3xl border border-white/20">
-            <button onclick="document.getElementById('readme-box').classList.add('hidden')" class="float-right text-slate-400"><i class="fas fa-times text-2xl"></i></button>
-            <h2 class="text-3xl font-bold text-emerald-400 mb-6 underline">Deployment Guide</h2>
-            <div class="prose prose-invert text-slate-300 space-y-4">
-                <p>1. **GitHub Pages:** Rename this file to `index.html`, upload to a repo, and enable GitHub Pages in Settings.</p>
-                <p>2. **Gemini API:** To use real AI, replace the `simulateAIAnalysis` function with a fetch call to: <br>
-                <code class="bg-white/10 px-2 py-1 rounded">https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=YOUR_API_KEY</code></p>
-                <p>3. **Firebase:** Connect your Firestore in the script tag to store real-time data instead of local state.</p>
-            </div>
-        </div>
-    </div>
-
+    <!-- Animation Keyframes -->
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </body>
 </html>
